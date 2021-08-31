@@ -1,0 +1,21 @@
+server:
+  port: 9500
+
+logging:
+  level:
+     org.springframework.web: DEBUG
+
+spring:
+  profiles:
+    active:  path
+  application:
+    name: gateway-server
+
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://peer1-server.com:8761/eureka, http://peer2-server.com:8762/eureka

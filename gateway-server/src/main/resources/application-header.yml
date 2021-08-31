@@ -1,0 +1,8 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: siriusbi
+          uri: lb://siriusbi
+          predicates:
+          - Header= siriusbi

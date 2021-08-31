@@ -1,0 +1,16 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: siriusbi
+          uri: lb://siriusbi
+          predicates:
+          - Path= /siriusbi/**
+          filters:
+          - StripPrefix=1 # required to strip the prefix made to the request .
+        - id: security
+          uri: lb://security
+          predicates:
+          - Path= /security/**
+          filters:
+           - StripPrefix=1

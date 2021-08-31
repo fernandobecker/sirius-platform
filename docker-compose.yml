@@ -1,0 +1,49 @@
+version: '3'
+
+services:
+  # Service Discovery Replication
+  eureka-server1:
+    network_mode: "host"
+    build: ./eureka-server
+    image: fiorde/eureka-server
+    hostname: eureka-server-1
+    container_name: eureka-server-1
+    ports:
+      - "8761:8761"
+    environment:
+      EXTRA_ARGS: "-Deureka.server.waitTimeInMsWhenSyncEmpty=5"
+      SPRING_PROFILES_ACTIVE: peer-1
+      EUREKA_CLIENT_SERVICE-URL_DEFAULT-ZONE: http://peer2-server.com:8762/eureka/
+
+  eureka-server2:
+    network_mode: "host"
+    build: ./eureka-server
+    image: fiorde/eureka-server
+    hostname: eureka-server-2
+    container_name: eureka-server-2
+    ports:
+      - "8762:8762"
+    environment:
+      EXTRA_ARGS: "-Deureka.server.waitTimeInMsWhenSyncEmpty=5"
+      SPRING_PROFILES_ACTIVE: peer-2
+      EUREKA_CLIENT_SERVICE-URL_DEFAULT-ZONE: http://peer1-server.com:8761/eureka/
+
+  # Gateway Server
+  gateway-server:
+    network_mode: "host"
+    build: ./gateway-server
+    image: fiorde/gateway-server
+    container_name: gateway-server
+    ports:
+      - "9500:9500"
+    depends_on:
+      - eureka-server1
+      - eureka-server2
+    environment:
+      SPRING_PROFILES_ACTIVE: path
+      EUREKA_CLIENT_SERVICE-URL_DEFAULT-ZONE: http://peer1-server.com:8761/eureka/,http://peer1-server.com:8762/eureka/
+      ##Config Routes Gateway
+      SPRING_CLOUD_GATEWAY_ROUTES[0]_URI: lb://siriusbi
+      SPRING_CLOUD_GATEWAY_ROUTES[0]_ID: siriusbi
+      SPRING_CLOUD_GATEWAY_ROUTES[0]_PREDICATES[0]: Path= /siriusbi/**
+      SPRING_CLOUD_GATEWAY_ROUTES[0]_FILTERS[0]: StripPrefix=1
