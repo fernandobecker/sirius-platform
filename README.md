@@ -1,11 +1,11 @@
 # Introduction
 
-Sirius Platform Core
-
-Creation of a project to test Spring Cloud Gateway with Eureka on Peer.
+Create a simple project to test Spring Cloud Gateway with Eureka in Peer.
 
 # Software needed
-1. Apache Maven (http://maven.apache.org) .
+
+1. Apache Maven (http://maven.apache.org).
+
 2. Docker (http://docker.com).
 
 # Config Hosts Eureka Clustered
